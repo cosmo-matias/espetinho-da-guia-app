@@ -47,30 +47,31 @@ export default function ProdutosPage() {
       
       <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800">
         <h2 className="text-xl font-semibold mb-4">Cadastrar Novo Produto</h2>
-        <form onSubmit={handleAdd} className="flex gap-4 items-end flex-wrap">
-          <div className="flex-1 min-w-[200px]">
+        <form onSubmit={handleAdd} className="flex flex-col w-full md:flex-row gap-4 items-end flex-wrap">
+          <div className="flex-1 w-full min-w-[200px]">
             <label className="block text-sm mb-1 text-zinc-400">Nome do Produto</label>
             <input type="text" value={name} onChange={e => setName(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-zinc-50 outline-none focus:border-orange-500 transition-colors" required />
           </div>
-          <div className="w-48">
+          <div className="w-full md:w-48">
             <label className="block text-sm mb-1 text-zinc-400">Categoria</label>
             <select value={category} onChange={e => setCategory(e.target.value as Category)} className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-zinc-50 outline-none focus:border-orange-500 transition-colors">
               {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
-          <div className="w-32">
+          <div className="w-full md:w-32">
             <label className="block text-sm mb-1 text-zinc-400">Preço (R$)</label>
             <input type="number" step="0.01" value={price} onChange={e => setPrice(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-zinc-50 outline-none focus:border-orange-500 transition-colors" required />
           </div>
-          <button type="submit" className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
+          <button type="submit" className="w-full md:w-auto bg-orange-600 hover:bg-orange-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
             Adicionar
           </button>
         </form>
       </div>
 
       <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-zinc-950 border-b border-zinc-800">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left">
+            <thead className="bg-zinc-950 border-b border-zinc-800">
             <tr>
               <th className="p-4 font-medium text-zinc-400">Nome</th>
               <th className="p-4 font-medium text-zinc-400">Categoria</th>
@@ -97,6 +98,7 @@ export default function ProdutosPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

@@ -90,8 +90,8 @@ export default function CaixaPage() {
       {/* Formulário de Lançamento */}
       <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800">
         <h2 className="text-xl font-semibold mb-4">Novo Lançamento</h2>
-        <form onSubmit={handleAdd} className="flex gap-4 items-end flex-wrap">
-          <div className="flex-1 min-w-[200px]">
+        <form onSubmit={handleAdd} className="flex flex-col w-full md:flex-row gap-4 items-end flex-wrap">
+          <div className="flex-1 w-full min-w-[200px]">
             <label className="block text-sm mb-1 text-zinc-400">Descrição</label>
             <input 
               type="text" 
@@ -101,7 +101,7 @@ export default function CaixaPage() {
               required 
             />
           </div>
-          <div className="w-48">
+          <div className="w-full md:w-48">
             <label className="block text-sm mb-1 text-zinc-400">Tipo</label>
             <select 
               value={type} 
@@ -112,7 +112,7 @@ export default function CaixaPage() {
               <option value="EXPENSE">Saída</option>
             </select>
           </div>
-          <div className="w-32">
+          <div className="w-full md:w-32">
             <label className="block text-sm mb-1 text-zinc-400">Valor (R$)</label>
             <input 
               type="number" 
@@ -123,7 +123,7 @@ export default function CaixaPage() {
               required 
             />
           </div>
-          <button type="submit" className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
+          <button type="submit" className="w-full md:w-auto bg-orange-600 hover:bg-orange-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
             Registrar
           </button>
         </form>
@@ -131,8 +131,9 @@ export default function CaixaPage() {
 
       {/* Histórico de Movimentações */}
       <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-zinc-950 border-b border-zinc-800">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left">
+            <thead className="bg-zinc-950 border-b border-zinc-800">
             <tr>
               <th className="p-4 font-medium text-zinc-400">Data</th>
               <th className="p-4 font-medium text-zinc-400">Descrição</th>
@@ -169,6 +170,7 @@ export default function CaixaPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );
