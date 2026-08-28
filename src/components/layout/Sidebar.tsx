@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { LayoutDashboard, Package, DollarSign, ClipboardList, ClipboardCheck, ChefHat } from 'lucide-react';
+import { LayoutDashboard, Package, DollarSign, ClipboardList, ClipboardCheck, ChefHat, BarChart } from 'lucide-react';
 
 export function Sidebar() {
   return (
@@ -22,6 +22,9 @@ export function Sidebar() {
         </Link>
         <Link href="/admin/producao" className="flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:p-3 rounded-lg hover:bg-zinc-800 transition-colors flex-1 md:flex-none justify-center md:justify-start text-xs md:text-base">
           <ChefHat size={24} className="md:w-5 md:h-5" /> <span className="hidden sm:inline-block md:inline">Produção</span>
+        </Link>
+        <Link href="/admin/relatorios" className="flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:p-3 rounded-lg hover:bg-zinc-800 transition-colors flex-1 md:flex-none justify-center md:justify-start text-xs md:text-base">
+          <BarChart size={24} className="md:w-5 md:h-5" /> <span className="hidden sm:inline-block md:inline">Relatórios</span>
         </Link>
         <Link href="/comandas" className="flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:p-3 rounded-lg hover:bg-zinc-800 transition-colors flex-1 md:flex-none justify-center md:justify-start text-xs md:text-base">
           <ClipboardList size={24} className="md:w-5 md:h-5" /> <span className="hidden sm:inline-block md:inline">Garçons</span>

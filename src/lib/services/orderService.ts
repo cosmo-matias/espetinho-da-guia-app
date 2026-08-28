@@ -28,6 +28,15 @@ export const getOrdersByWaiter = async (waiterName: string): Promise<Order[]> =>
   return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Order));
 };
 
+export const getClosedOrders = async (): Promise<Order[]> => {
+  const q = query(
+    collection(db, COLLECTION_NAME),
+    where("status", "==", "CLOSED")
+  );
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Order));
+};
+
 export const addItemsToOrder = async (orderId: string, newItems: OrderItem[]) => {
   const docRef = doc(db, COLLECTION_NAME, orderId);
   const docSnap = await getDoc(docRef);
