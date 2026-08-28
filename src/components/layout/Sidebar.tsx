@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { LayoutDashboard, Package, DollarSign, ClipboardList } from 'lucide-react';
+import { LayoutDashboard, Package, DollarSign, ClipboardList, ClipboardCheck } from 'lucide-react';
 
 export function Sidebar() {
   return (
@@ -17,9 +17,13 @@ export function Sidebar() {
         <Link href="/admin/caixa" className="flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-800 transition-colors">
           <DollarSign size={20} /> Caixa
         </Link>
+        <Link href="/admin/comandas" className="flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-800 transition-colors">
+          <ClipboardCheck size={20} /> Gestão de Comandas
+        </Link>
         <Link href="/comandas" className="flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-800 transition-colors">
           <ClipboardList size={20} /> Comandas (Garçons)
         </Link>
+
       </nav>
     </aside>
   );
