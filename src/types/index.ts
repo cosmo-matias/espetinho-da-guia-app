@@ -32,3 +32,12 @@ export interface CashTransaction {
   amount: number;
   date: Date;
 }
+
+export interface DailyProduction {
+  id: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitCost: number;
+  date: Date;
+}
