@@ -8,7 +8,7 @@ import { Minus, Plus, ShoppingCart } from 'lucide-react';
 
 export default function ComandasPage() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [tableNumber, setTableNumber] = useState('');
+  const [tableNumber, setTableNumber] = useState('01');
   const [responsibleName, setResponsibleName] = useState('');
   const [waiterName, setWaiterName] = useState('');
   const [cart, setCart] = useState<{ [productId: string]: number }>({});
@@ -81,7 +81,7 @@ export default function ComandasPage() {
         createdAt: new Date()
       });
       alert('Pedido enviado com sucesso!');
-      setTableNumber('');
+      setTableNumber('01');
       setResponsibleName('');
       setCart({});
     } catch (error) {
@@ -119,13 +119,16 @@ export default function ComandasPage() {
         <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 space-y-4">
           <div>
             <label className="block text-sm mb-1 text-zinc-400">Mesa</label>
-            <input 
-              type="text" 
-              placeholder="Ex: 05"
-              value={tableNumber} 
-              onChange={e => setTableNumber(e.target.value)} 
-              className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-zinc-50 outline-none focus:border-orange-500 transition-colors" 
-            />
+            <select
+              value={tableNumber}
+              onChange={e => setTableNumber(e.target.value)}
+              className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-zinc-50 outline-none focus:border-orange-500 transition-colors"
+            >
+              {Array.from({ length: 15 }, (_, i) => {
+                const num = (i + 1).toString().padStart(2, '0');
+                return <option key={num} value={num}>Mesa {num}</option>;
+              })}
+            </select>
           </div>
           <div>
             <label className="block text-sm mb-1 text-zinc-400">Cliente / Responsável</label>
