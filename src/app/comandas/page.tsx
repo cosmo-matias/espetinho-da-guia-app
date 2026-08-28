@@ -189,9 +189,13 @@ export default function ComandasPage() {
             </div>
           ))
         )}
+
+        <div className="py-8 text-center pb-24">
+          <p className="text-xs text-zinc-600">Desenvolvido por Ducosmo</p>
+        </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 p-4 shadow-xl shadow-black z-50">
+      <footer className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 p-4 shadow-xl shadow-black z-50">
         <div className="flex items-center justify-between mb-4">
           <span className="text-zinc-400 font-medium">Total do Pedido</span>
           <span className="text-2xl font-bold text-emerald-500">R$ {total.toFixed(2).replace('.', ',')}</span>
@@ -204,7 +208,7 @@ export default function ComandasPage() {
           <ShoppingCart size={20} />
           {submitting ? 'Enviando...' : 'Enviar Pedido'}
         </button>
-      </div>
+      </footer>
     </div>
   );
 }

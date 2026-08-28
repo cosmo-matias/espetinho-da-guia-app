@@ -30,6 +30,9 @@ export function Sidebar() {
           <ClipboardList size={24} className="md:w-5 md:h-5" /> <span className="hidden sm:inline-block md:inline">Garçons</span>
         </Link>
       </nav>
+      <div className="hidden md:block p-4 border-t border-zinc-800">
+        <p className="text-xs text-zinc-500 text-center">Desenvolvido por Ducosmo</p>
+      </div>
     </aside>
   );
 }
