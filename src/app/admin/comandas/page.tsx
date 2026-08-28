@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { getOrders, updateOrder } from '@/lib/services/orderService';
 import { addTransaction } from '@/lib/services/transactionService';
+import { updateProductStock } from '@/lib/services/productService';
 import { Order } from '@/types';
 import { CheckCircle2, UserCircle, Receipt } from 'lucide-react';
 
@@ -42,6 +43,11 @@ export default function GestaoComandasPage() {
           description: `Fechamento Mesa ${order.tableNumber} - ${order.responsibleName} ${order.paymentMethod ? `(${order.paymentMethod})` : ''}`,
           date: new Date()
         });
+        
+        // Baixa automática no estoque
+        for (const item of order.items) {
+          await updateProductStock(item.productId, -item.quantity);
+        }
         
         loadOrders();
       } catch (error) {

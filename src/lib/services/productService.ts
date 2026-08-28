@@ -1,5 +1,5 @@
 import { db } from '@/lib/firebase';
-import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc, increment } from 'firebase/firestore';
 import { Product } from '@/types';
 
 const COLLECTION_NAME = 'products';
@@ -21,4 +21,11 @@ export const updateProduct = async (id: string, product: Partial<Omit<Product, '
 export const deleteProduct = async (id: string) => {
   const docRef = doc(db, COLLECTION_NAME, id);
   return await deleteDoc(docRef);
+};
+
+export const updateProductStock = async (productId: string, quantityChange: number) => {
+  const docRef = doc(db, COLLECTION_NAME, productId);
+  return await updateDoc(docRef, {
+    stockQuantity: increment(quantityChange)
+  });
 };

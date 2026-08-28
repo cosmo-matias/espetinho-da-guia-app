@@ -76,16 +76,18 @@ export default function ProdutosPage() {
               <th className="p-4 font-medium text-zinc-400">Nome</th>
               <th className="p-4 font-medium text-zinc-400">Categoria</th>
               <th className="p-4 font-medium text-zinc-400">Preço</th>
+              <th className="p-4 font-medium text-zinc-400">Estoque</th>
               <th className="p-4 font-medium text-zinc-400 w-20 text-center">Ações</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-800">
-            {loading ? <tr><td colSpan={4} className="p-8 text-center text-zinc-500">Carregando produtos...</td></tr> : 
+            {loading ? <tr><td colSpan={5} className="p-8 text-center text-zinc-500">Carregando produtos...</td></tr> : 
               products.map(p => (
                 <tr key={p.id} className="hover:bg-zinc-800/50 transition-colors">
                   <td className="p-4">{p.name}</td>
                   <td className="p-4"><span className="bg-zinc-800 border border-zinc-700 px-2.5 py-1 rounded-md text-xs font-medium text-zinc-300">{p.category}</span></td>
                   <td className="p-4">R$ {p.price.toFixed(2).replace('.', ',')}</td>
+                  <td className="p-4 font-medium text-zinc-300">{p.stockQuantity || 0}</td>
                   <td className="p-4 text-center">
                     <button onClick={() => handleDelete(p.id)} className="text-red-500 hover:text-red-400 transition-colors p-2 rounded-lg hover:bg-red-500/10">
                       <Trash2 size={18} />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { getProducts } from '@/lib/services/productService';
+import { getProducts, updateProductStock } from '@/lib/services/productService';
 import { getProductions, addProduction } from '@/lib/services/productionService';
 import { Product, DailyProduction } from '@/types';
 
@@ -44,13 +44,17 @@ export default function ProducaoPage() {
     const product = products.find(p => p.id === productId);
     if (!product) return;
     
+    const parsedQuantity = parseInt(quantity, 10);
     await addProduction({
       productId,
       productName: product.name,
-      quantity: parseInt(quantity, 10),
+      quantity: parsedQuantity,
       unitCost: parseFloat(unitCost),
       date: new Date()
     });
+    
+    // Entrada automática no estoque
+    await updateProductStock(productId, parsedQuantity);
     
     setProductId('');
     setQuantity('');
