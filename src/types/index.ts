@@ -33,6 +33,16 @@ export interface CashTransaction {
   description: string;
   amount: number;
   date: Date;
+  sessionId?: string;
+}
+
+export interface CashSession {
+  id: string;
+  openedAt: Date;
+  closedAt?: Date;
+  initialBalance: number;
+  finalBalance?: number;
+  status: 'OPEN' | 'CLOSED';
 }
 
 export interface DailyProduction {
