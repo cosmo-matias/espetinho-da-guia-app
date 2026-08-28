@@ -105,9 +105,14 @@ export default function ComandasPage() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-50 pb-24 font-sans">
-      <header className="bg-zinc-900 p-6 border-b border-zinc-800">
-        <h1 className="text-2xl font-bold text-orange-500">Nova Comanda</h1>
-        <p className="text-sm text-zinc-400 mt-1">Preencha os dados e selecione os itens</p>
+      <header className="bg-zinc-900 p-6 border-b border-zinc-800 flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-orange-500">Nova Comanda</h1>
+          <p className="text-sm text-zinc-400 mt-1">Preencha os dados e selecione os itens</p>
+        </div>
+        <a href="/comandas/minhas" className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          Minhas Comandas
+        </a>
       </header>
 
       <main className="p-4 space-y-6">
