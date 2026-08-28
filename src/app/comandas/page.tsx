@@ -22,6 +22,11 @@ export default function ComandasPage() {
       setLoading(false);
     };
     loadProducts();
+
+    const savedWaiter = localStorage.getItem('@espetinho:garcom');
+    if (savedWaiter) {
+      setWaiterName(savedWaiter);
+    }
   }, []);
 
   const handleQuantity = (productId: string, delta: number) => {
@@ -78,7 +83,6 @@ export default function ComandasPage() {
       alert('Pedido enviado com sucesso!');
       setTableNumber('');
       setResponsibleName('');
-      setWaiterName('');
       setCart({});
     } catch (error) {
       alert('Erro ao enviar pedido. Tente novamente.');
@@ -134,7 +138,10 @@ export default function ComandasPage() {
               type="text" 
               placeholder="Seu nome"
               value={waiterName} 
-              onChange={e => setWaiterName(e.target.value)} 
+              onChange={e => {
+                setWaiterName(e.target.value);
+                localStorage.setItem('@espetinho:garcom', e.target.value);
+              }} 
               className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-zinc-50 outline-none focus:border-orange-500 transition-colors" 
             />
           </div>
