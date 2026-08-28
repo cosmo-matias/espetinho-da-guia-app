@@ -20,7 +20,8 @@ export interface Order {
   responsibleName: string;
   waiterName: string;
   items: OrderItem[];
-  status: 'OPEN' | 'CLOSED';
+  status: 'OPEN' | 'CLOSING_REQUESTED' | 'CLOSED';
+  paymentMethod?: 'PIX' | 'CARTAO' | 'DINHEIRO';
   total: number;
   createdAt: Date;
 }

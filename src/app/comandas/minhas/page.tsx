@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { getOrdersByWaiter, addItemsToOrder } from '@/lib/services/orderService';
+import { getOrdersByWaiter, addItemsToOrder, updateOrder } from '@/lib/services/orderService';
 import { getProducts } from '@/lib/services/productService';
 import { Order, Product, Category, OrderItem } from '@/types';
-import { ChevronLeft, Plus, Minus, Check } from 'lucide-react';
+import { ChevronLeft, Plus, Minus, Check, Receipt } from 'lucide-react';
 import Link from 'next/link';
 
 export default function MinhasComandasPage() {
@@ -14,6 +14,8 @@ export default function MinhasComandasPage() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [addingToOrderId, setAddingToOrderId] = useState<string | null>(null);
+  const [closingOrderId, setClosingOrderId] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<'PIX' | 'CARTAO' | 'DINHEIRO'>('PIX');
   const [cart, setCart] = useState<{ [productId: string]: number }>({});
 
   const loadData = async (waiter: string) => {
@@ -80,6 +82,17 @@ export default function MinhasComandasPage() {
       loadData(waiterName);
     } catch (error) {
       alert('Erro ao adicionar itens.');
+    }
+  };
+
+  const handleRequestBill = async (orderId: string) => {
+    try {
+      await updateOrder(orderId, { status: 'CLOSING_REQUESTED', paymentMethod });
+      alert('Conta solicitada ao caixa!');
+      setClosingOrderId(null);
+      loadData(waiterName);
+    } catch (error) {
+      alert('Erro ao pedir conta.');
     }
   };
 
@@ -157,7 +170,37 @@ export default function MinhasComandasPage() {
                 </div>
               </div>
               
-              {addingToOrderId === order.id ? (
+              {order.status === 'CLOSING_REQUESTED' ? (
+                <div className="p-4 bg-orange-950/30 border-t border-orange-900/50 text-center">
+                  <p className="text-orange-400 font-medium">Aguardando confirmação do caixa...</p>
+                  <p className="text-xs text-orange-500/70 mt-1">Forma de pagamento: {order.paymentMethod}</p>
+                </div>
+              ) : closingOrderId === order.id ? (
+                <div className="p-5 bg-zinc-950 border-t border-zinc-800 space-y-4">
+                  <h3 className="font-semibold text-orange-500 flex justify-between items-center">
+                    Pedir Conta
+                    <button onClick={() => setClosingOrderId(null)} className="text-sm font-normal text-zinc-400 hover:text-white">Cancelar</button>
+                  </h3>
+                  <div>
+                    <label className="block text-sm mb-1 text-zinc-400">Forma de Pagamento</label>
+                    <select 
+                      value={paymentMethod}
+                      onChange={(e) => setPaymentMethod(e.target.value as 'PIX' | 'CARTAO' | 'DINHEIRO')}
+                      className="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-zinc-50 outline-none focus:border-orange-500"
+                    >
+                      <option value="PIX">PIX</option>
+                      <option value="CARTAO">Cartão</option>
+                      <option value="DINHEIRO">Dinheiro</option>
+                    </select>
+                  </div>
+                  <button 
+                    onClick={() => handleRequestBill(order.id)}
+                    className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <Receipt size={18} /> Confirmar Pedido de Conta
+                  </button>
+                </div>
+              ) : addingToOrderId === order.id ? (
                 <div className="p-5 bg-zinc-950 border-t border-zinc-800 space-y-4">
                   <h3 className="font-semibold text-orange-500 flex justify-between items-center">
                     Adicionar Mais Itens
@@ -190,12 +233,18 @@ export default function MinhasComandasPage() {
                   </button>
                 </div>
               ) : (
-                <div className="p-4 bg-zinc-950/50 border-t border-zinc-800">
+                <div className="p-4 bg-zinc-950/50 border-t border-zinc-800 flex gap-2">
                   <button 
                     onClick={() => setAddingToOrderId(order.id)}
-                    className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 rounded-lg transition-colors text-sm"
+                    className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 rounded-lg transition-colors text-sm"
                   >
-                    + Adicionar Mais Itens
+                    + Itens
+                  </button>
+                  <button 
+                    onClick={() => { setClosingOrderId(order.id); setPaymentMethod('PIX'); }}
+                    className="flex-1 bg-orange-600/20 hover:bg-orange-600/30 text-orange-500 border border-orange-500/20 font-medium py-3 rounded-lg transition-colors text-sm flex items-center justify-center gap-2"
+                  >
+                    <Receipt size={16} /> Pedir Conta
                   </button>
                 </div>
               )}

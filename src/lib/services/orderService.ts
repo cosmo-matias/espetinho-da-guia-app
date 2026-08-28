@@ -22,7 +22,7 @@ export const getOrdersByWaiter = async (waiterName: string): Promise<Order[]> =>
   const q = query(
     collection(db, COLLECTION_NAME),
     where("waiterName", "==", waiterName),
-    where("status", "==", "OPEN")
+    where("status", "in", ["OPEN", "CLOSING_REQUESTED"])
   );
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Order));
