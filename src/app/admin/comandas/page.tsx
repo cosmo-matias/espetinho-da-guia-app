@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import { getOrders, updateOrder } from '@/lib/services/orderService';
 import { addTransaction } from '@/lib/services/transactionService';
 import { updateProductStock } from '@/lib/services/productService';
+import { generateOrderPDF } from '@/lib/utils/pdfGenerator';
 import { Order } from '@/types';
-import { CheckCircle2, UserCircle, Receipt } from 'lucide-react';
+import { CheckCircle2, UserCircle, Receipt, FileDown } from 'lucide-react';
 
 export default function GestaoComandasPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -130,13 +131,22 @@ export default function GestaoComandasPage() {
                     <span className="text-zinc-400 font-medium">Total</span>
                     <span className="text-2xl font-bold text-emerald-500">R$ {order.total.toFixed(2).replace('.', ',')}</span>
                   </div>
-                  <button
-                    onClick={() => handleCloseOrder(order)}
-                    className={`w-full font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2 ${isClosing ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-600/20' : 'bg-emerald-600 hover:bg-emerald-700 text-white'}`}
-                  >
-                    <CheckCircle2 size={18} />
-                    {isClosing ? 'Confirmar Pagamento' : 'Fechar Conta'}
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleCloseOrder(order)}
+                      className={`flex-1 font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2 ${isClosing ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-600/20' : 'bg-emerald-600 hover:bg-emerald-700 text-white'}`}
+                    >
+                      <CheckCircle2 size={18} />
+                      {isClosing ? 'Confirmar' : 'Fechar Conta'}
+                    </button>
+                    <button
+                      onClick={() => generateOrderPDF(order)}
+                      className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-3 rounded-lg transition-colors flex items-center justify-center"
+                      title="Baixar PDF"
+                    >
+                      <FileDown size={18} />
+                    </button>
+                  </div>
                 </div>
               </div>
             );
