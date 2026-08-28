@@ -10,6 +10,7 @@ export default function ComandasPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [tableNumber, setTableNumber] = useState('');
   const [responsibleName, setResponsibleName] = useState('');
+  const [waiterName, setWaiterName] = useState('');
   const [cart, setCart] = useState<{ [productId: string]: number }>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -41,8 +42,8 @@ export default function ComandasPage() {
   };
 
   const handleSubmit = async () => {
-    if (!tableNumber || !responsibleName) {
-      alert('Preencha a mesa e o nome do responsável.');
+    if (!tableNumber || !responsibleName || !waiterName) {
+      alert('Preencha a mesa, o cliente e o seu nome (garçom).');
       return;
     }
 
@@ -68,6 +69,7 @@ export default function ComandasPage() {
       await createOrder({
         tableNumber,
         responsibleName,
+        waiterName,
         items,
         status: 'OPEN',
         total: calculateTotal(),
@@ -76,6 +78,7 @@ export default function ComandasPage() {
       alert('Pedido enviado com sucesso!');
       setTableNumber('');
       setResponsibleName('');
+      setWaiterName('');
       setCart({});
     } catch (error) {
       alert('Erro ao enviar pedido. Tente novamente.');
@@ -122,6 +125,16 @@ export default function ComandasPage() {
               placeholder="Nome do cliente"
               value={responsibleName} 
               onChange={e => setResponsibleName(e.target.value)} 
+              className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-zinc-50 outline-none focus:border-orange-500 transition-colors" 
+            />
+          </div>
+          <div>
+            <label className="block text-sm mb-1 text-zinc-400">Garçom</label>
+            <input 
+              type="text" 
+              placeholder="Seu nome"
+              value={waiterName} 
+              onChange={e => setWaiterName(e.target.value)} 
               className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-zinc-50 outline-none focus:border-orange-500 transition-colors" 
             />
           </div>

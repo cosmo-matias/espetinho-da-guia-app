@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { getOrders, updateOrder } from '@/lib/services/orderService';
 import { addTransaction } from '@/lib/services/transactionService';
 import { Order } from '@/types';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, UserCircle } from 'lucide-react';
 
 export default function GestaoComandasPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -76,16 +76,24 @@ export default function GestaoComandasPage() {
 
             return (
               <div key={order.id} className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden flex flex-col">
-                <div className="p-5 border-b border-zinc-800 bg-zinc-950/50 flex justify-between items-start">
-                  <div>
-                    <h2 className="text-2xl font-bold text-orange-500">Mesa {order.tableNumber}</h2>
-                    <p className="text-zinc-300 font-medium">{order.responsibleName}</p>
+                <div className="p-5 border-b border-zinc-800 bg-zinc-950/50 flex flex-col gap-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h2 className="text-2xl font-bold text-orange-500">Mesa {order.tableNumber}</h2>
+                      <p className="text-zinc-300 font-medium">{order.responsibleName}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xs text-zinc-500 font-medium bg-zinc-900 px-2 py-1 rounded-md border border-zinc-800">
+                        Aberta às {dateStr}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-xs text-zinc-500 font-medium bg-zinc-900 px-2 py-1 rounded-md border border-zinc-800">
-                      Aberta às {dateStr}
-                    </span>
-                  </div>
+                  {order.waiterName && (
+                    <div className="flex items-center gap-1.5 text-sm text-zinc-400 mt-2">
+                      <UserCircle size={16} />
+                      <span>Garçom: <strong className="text-zinc-300 font-medium">{order.waiterName}</strong></span>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="p-5 flex-1 space-y-3">

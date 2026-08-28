@@ -18,6 +18,7 @@ export interface Order {
   id: string;
   tableNumber: string;
   responsibleName: string;
+  waiterName: string;
   items: OrderItem[];
   status: 'OPEN' | 'CLOSED';
   total: number;
