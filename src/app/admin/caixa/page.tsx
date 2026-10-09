@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { getTransactions, addTransaction, getCurrentOpenSession, openSession, closeSession } from '@/lib/services/transactionService';
 import { CashTransaction, CashSession } from '@/types';
 import { TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
+import { generateDailyReportPDF } from '@/lib/utils/pdfGenerator';
 
 export default function CaixaPage() {
   const [transactions, setTransactions] = useState<CashTransaction[]>([]);
@@ -18,6 +19,9 @@ export default function CaixaPage() {
   
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  
+  const [showClosedModal, setShowClosedModal] = useState(false);
+  const [lastClosedBalance, setLastClosedBalance] = useState(0);
 
   const loadData = async () => {
     setLoading(true);
@@ -44,15 +48,14 @@ export default function CaixaPage() {
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!description || !amount) return;
-    
+
     await addTransaction({
       description,
       amount: parseFloat(amount),
       type,
-      date: new Date(),
-      sessionId: currentSession?.id
+      date: new Date()
     });
-    
+
     setDescription('');
     setAmount('');
     loadData();
@@ -68,7 +71,23 @@ export default function CaixaPage() {
   const handleCloseSession = async () => {
     if (!currentSession) return;
     if (confirm('Tem certeza que deseja fechar o caixa?')) {
-      await closeSession(currentSession.id, filteredBalance);
+      const sessionTransactions = transactions.filter(t => t.sessionId === currentSession.id);
+      
+      const balanceToClose = filteredBalance;
+      await closeSession(currentSession.id, balanceToClose);
+      
+      const updatedSession = {
+        ...currentSession,
+        closedAt: new Date(),
+        finalBalance: balanceToClose,
+        status: 'CLOSED'
+      };
+      
+      generateDailyReportPDF(updatedSession, sessionTransactions);
+      
+      setLastClosedBalance(balanceToClose);
+      setShowClosedModal(true);
+      
       loadData();
     }
   };
@@ -86,14 +105,14 @@ export default function CaixaPage() {
     return true;
   });
 
-  const income = filteredTransactions.filter(t => t.type === 'INCOME').reduce((acc, t) => acc + t.amount, 0);
-  const expenses = filteredTransactions.filter(t => t.type === 'EXPENSE').reduce((acc, t) => acc + t.amount, 0);
+  const sessionInitial = currentSession && !startDate && !endDate ? currentSession.initialBalance : 0;
   
-  const sessionInitial = (!startDate && !endDate && currentSession) ? currentSession.initialBalance : 0;
-  const filteredBalance = sessionInitial + income - expenses;
+  const incomes = filteredTransactions.filter(t => t.type === 'INCOME').reduce((acc, curr) => acc + curr.amount, 0);
+  const expenses = filteredTransactions.filter(t => t.type === 'EXPENSE').reduce((acc, curr) => acc + curr.amount, 0);
+  const filteredBalance = sessionInitial + incomes - expenses;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Controle de Caixa</h1>
         {currentSession && (
@@ -113,7 +132,7 @@ export default function CaixaPage() {
                 <span className="text-zinc-400 font-medium">Entradas</span>
                 <TrendingUp className="text-emerald-500" size={24} />
               </div>
-              <span className="text-3xl font-bold text-emerald-500">R$ {income.toFixed(2).replace('.', ',')}</span>
+              <span className="text-3xl font-bold text-emerald-500">R$ {incomes.toFixed(2).replace('.', ',')}</span>
             </div>
             
             <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800">
@@ -258,6 +277,25 @@ export default function CaixaPage() {
             </div>
           </div>
         </>
+      )}
+
+      {showClosedModal && (
+        <div className="fixed inset-0 bg-black/60 z-[1000] flex items-center justify-center p-4">
+          <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl shadow-xl max-w-sm w-full text-center space-y-4">
+            <h2 className="text-2xl font-bold text-orange-500">Caixa Fechado!</h2>
+            <p className="text-zinc-300">O download do relatório em PDF iniciará automaticamente.</p>
+            <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
+              <span className="block text-sm text-zinc-400 mb-1">Saldo Final</span>
+              <span className="text-3xl font-bold text-white">R$ {lastClosedBalance.toFixed(2).replace('.', ',')}</span>
+            </div>
+            <button 
+              onClick={() => setShowClosedModal(false)}
+              className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 rounded-xl transition-colors"
+            >
+              Concluir
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

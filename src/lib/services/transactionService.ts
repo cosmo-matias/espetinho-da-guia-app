@@ -44,3 +44,9 @@ export const closeSession = async (sessionId: string, finalBalance: number) => {
     status: 'CLOSED'
   });
 };
+
+export const getClosedSessions = async (): Promise<CashSession[]> => {
+  const q = query(collection(db, SESSIONS_COLLECTION), where('status', '==', 'CLOSED'));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as CashSession));
+};
