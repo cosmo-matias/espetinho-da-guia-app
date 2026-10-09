@@ -1,4 +1,5 @@
 import { Sidebar } from '@/components/layout/Sidebar';
+import { InactivityAlert } from '@/components/admin/InactivityAlert';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,6 +8,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <main className="flex-1 p-4 md:p-8 overflow-y-auto pb-20 md:pb-0">
         {children}
       </main>
+      <InactivityAlert />
     </div>
   );
 }

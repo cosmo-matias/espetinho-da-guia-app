@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { getProducts } from '@/lib/services/productService';
 import { createOrder } from '@/lib/services/orderService';
+import { getCurrentOpenSession } from '@/lib/services/transactionService';
 import { Product, Category, OrderItem } from '@/types';
 import { Minus, Plus, ShoppingCart } from 'lucide-react';
 
@@ -14,6 +15,7 @@ export default function ComandasPage() {
   const [cart, setCart] = useState<{ [productId: string]: number }>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [isCaixaAberto, setIsCaixaAberto] = useState(true);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -21,7 +23,20 @@ export default function ComandasPage() {
       setProducts(data);
       setLoading(false);
     };
+
+    const loadSession = async () => {
+      try {
+        const session = await getCurrentOpenSession();
+        if (!session) {
+          setIsCaixaAberto(false);
+        }
+      } catch (error) {
+        console.error("Erro ao verificar caixa:", error);
+      }
+    };
+
     loadProducts();
+    loadSession();
 
     const savedWaiter = localStorage.getItem('@espetinho:garcom');
     if (savedWaiter) {
@@ -115,6 +130,13 @@ export default function ComandasPage() {
         </a>
       </header>
 
+      {!isCaixaAberto && (
+        <div className="bg-red-900/50 border-b border-red-800 p-4 text-center text-red-200">
+          <p className="font-semibold">Caixa Fechado.</p>
+          <p className="text-sm">Aguarde a gerência abrir o caixa de hoje para lançar novos pedidos.</p>
+        </div>
+      )}
+
       <main className="p-4 space-y-6">
         <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 space-y-4">
           <div>
@@ -171,14 +193,16 @@ export default function ComandasPage() {
                     <div className="flex items-center gap-3 bg-zinc-950 rounded-lg border border-zinc-800 p-1">
                       <button 
                         onClick={() => handleQuantity(product.id, -1)}
-                        className="p-2 text-zinc-400 hover:text-zinc-50 hover:bg-zinc-800 rounded-md transition-colors"
+                        disabled={!isCaixaAberto}
+                        className="p-2 text-zinc-400 hover:text-zinc-50 hover:bg-zinc-800 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Minus size={18} />
                       </button>
                       <span className="w-6 text-center font-medium">{cart[product.id] || 0}</span>
                       <button 
                         onClick={() => handleQuantity(product.id, 1)}
-                        className="p-2 text-zinc-400 hover:text-zinc-50 hover:bg-zinc-800 rounded-md transition-colors"
+                        disabled={!isCaixaAberto}
+                        className="p-2 text-zinc-400 hover:text-zinc-50 hover:bg-zinc-800 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Plus size={18} />
                       </button>
@@ -202,7 +226,7 @@ export default function ComandasPage() {
         </div>
         <button 
           onClick={handleSubmit}
-          disabled={submitting}
+          disabled={submitting || !isCaixaAberto}
           className="w-full flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl transition-colors text-lg"
         >
           <ShoppingCart size={20} />
